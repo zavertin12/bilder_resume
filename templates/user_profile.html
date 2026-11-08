@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Мій профіль · Bilder Resume{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div class="eyebrow">Особистий кабінет</div>
+    <h1>Вітаємо, {{ request.user.username }}!</h1>
+    <p class="lead">Тут ви можете керувати своїм профілем і резюме.</p>
+</section>
+
+<section class="card">
+    <div class="profile-grid">
+        <div class="profile-item">
+            <strong>Обліковий запис</strong>
+            <span>{{ request.user.username }}</span>
+        </div>
+        <div class="profile-item">
+            <strong>Електронна пошта</strong>
+            <span>{{ request.user.email|default:"Не вказана" }}</span>
+        </div>
+        <div class="profile-item">
+            <strong>Резюме</strong>
+            <span>{% if resume.name %}{{ resume.name }}{% else %}Ще не заповнене{% endif %}</span>
+        </div>
+        <div class="profile-item">
+            <strong>Профіль</strong>
+            <span>{% if user_profile.bio %}{{ user_profile.bio }}{% else %}Додайте інформацію про себе у резюме.{% endif %}</span>
+        </div>
+    </div>
+    <div class="actions">
+        <a class="button" href="{% url 'resume_edit' %}">Створити або редагувати резюме</a>
+        <a class="button secondary" href="{% url 'resume' %}">Переглянути резюме</a>
+    </div>
+</section>
+{% endblock %}

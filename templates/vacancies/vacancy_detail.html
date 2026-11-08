@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ vacancy.title }} · Вакансії{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div class="eyebrow">Вакансія</div>
+    <h1>{{ vacancy.title }}</h1>
+    <p class="lead">{{ vacancy.company }}{% if vacancy.city %} · {{ vacancy.city }}{% endif %}</p>
+</section>
+
+<article class="card">
+    <section class="resume-section">
+        <h2>Опис вакансії</h2>
+        <p>{{ vacancy.description|linebreaksbr }}</p>
+    </section>
+    {% if vacancy.requirements %}
+    <section class="resume-section">
+        <h2>Вимоги до кандидата</h2>
+        <p>{{ vacancy.requirements|linebreaksbr }}</p>
+    </section>
+    {% endif %}
+    <p class="hint">Опубліковано {{ vacancy.created_at|date:"j E Y" }}</p>
+    <div class="actions">
+        <a class="button secondary" href="{% url 'vacancy_list' %}">До списку вакансій</a>
+    </div>
+</article>
+
+{% if can_apply %}
+<section class="card vacancy-apply">
+    <h2>Відгукнутися на вакансію</h2>
+    {% if has_resumes %}
+        <p class="lead">Оберіть резюме, яке побачить автор вакансії.</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="field">
+                <label for="{{ application_form.resume.id_for_label }}">{{ application_form.resume.label }}</label>
+                {{ application_form.resume }}
+                {% for error in application_form.resume.errors %}
+                    <span class="notice" role="alert">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="actions">
+                <button class="button" type="submit">Надіслати відгук</button>
+            </div>
+        </form>
+    {% else %}
+        <p>Спочатку створіть резюме, щоб відгукнутися.</p>
+        <a class="button" href="{% url 'resume_edit' %}">Створити резюме</a>
+    {% endif %}
+</section>
+{% elif not user.is_authenticated %}
+<p class="actions"><a class="button" href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Увійдіть, щоб відгукнутися</a></p>
+{% endif %}
+
+{% if applications %}
+<section class="card vacancy-applications">
+    <h2>{% if is_vacancy_owner %}Отримані відгуки{% else %}Ваш відгук{% endif %}</h2>
+    {% for application in applications %}
+        <article class="vacancy-application">
+            <h3>{{ application.resume.name }}</h3>
+            <p class="hint">
+                {% if is_vacancy_owner %}Відгук від {{ application.applicant.username }} · {% endif %}
+                {{ application.created_at|date:"j E Y, H:i" }}
+            </p>
+            <div class="contact">
+                {% if application.resume.email %}<span>{{ application.resume.email }}</span>{% endif %}
+                {% if application.resume.phone %}<span>{{ application.resume.phone }}</span>{% endif %}
+                {% if application.resume.city %}<span>{{ application.resume.city }}</span>{% endif %}
+            </div>
+            {% if application.resume.about %}
+                <section class="resume-section"><h4>Про себе</h4><p>{{ application.resume.about|linebreaksbr }}</p></section>
+            {% endif %}
+            {% if application.resume.experience %}
+                <section class="resume-section"><h4>Досвід роботи</h4><p>{{ application.resume.experience|linebreaksbr }}</p></section>
+            {% endif %}
+            {% if application.resume.education %}
+                <section class="resume-section"><h4>Освіта</h4><p>{{ application.resume.education|linebreaksbr }}</p></section>
+            {% endif %}
+            {% if application.resume.skills %}
+                <section class="resume-section"><h4>Навички</h4><p>{{ application.resume.skills|linebreaksbr }}</p></section>
+            {% endif %}
+        </article>
+    {% endfor %}
+</section>
+{% endif %}
+{% endblock %}

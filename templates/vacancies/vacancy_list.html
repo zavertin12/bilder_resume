@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Вакансії · Bilder Resume{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div class="eyebrow">Пропозиції роботи</div>
+    <h1>Вакансії</h1>
+    <p class="lead">Переглядайте актуальні вакансії або поділіться власною пропозицією.</p>
+</section>
+
+<div class="actions">
+    <a class="button" href="{% url 'vacancy_create' %}">Створити вакансію</a>
+</div>
+
+{% for vacancy in vacancies %}
+    <article class="card" style="margin-top: 20px;">
+        <h2><a href="{% url 'vacancy_detail' vacancy.pk %}">{{ vacancy.title }}</a></h2>
+        <p class="lead">{{ vacancy.company }}{% if vacancy.city %} · {{ vacancy.city }}{% endif %}</p>
+        <p>{{ vacancy.description|truncatewords:35 }}</p>
+        <a class="button secondary" href="{% url 'vacancy_detail' vacancy.pk %}">Детальніше</a>
+    </article>
+{% empty %}
+    <div class="card" style="margin-top: 20px;">
+        <p class="empty">Вакансій поки немає. Будьте першим, хто опублікує пропозицію.</p>
+    </div>
+{% endfor %}
+{% endblock %}

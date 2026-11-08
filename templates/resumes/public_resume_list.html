@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Публічні резюме · Bilder Resume{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div class="eyebrow">Професійна спільнота</div>
+    <h1>Публічні резюме</h1>
+    <p class="lead">Знайдіть фахівців за ім’ям, містом або навичками.</p>
+</section>
+
+<form class="card" method="get" role="search">
+    <div class="field">
+        <label for="resume-search">Пошук резюме</label>
+        <input id="resume-search" name="q" type="search" value="{{ request.GET.q }}" placeholder="Ім’я, місто або навичка">
+    </div>
+    <div class="actions">
+        <button class="button" type="submit">Шукати</button>
+        {% if request.GET.q %}
+            <a class="button secondary" href="{% url 'public_resume_list' %}">Очистити пошук</a>
+        {% endif %}
+    </div>
+</form>
+
+{% for resume in resumes %}
+    <article class="card" style="margin-top: 20px;">
+        <h2><a href="{% url 'public_resume_detail' resume.pk %}">{{ resume.name }}</a></h2>
+        {% if resume.city %}<p class="lead">{{ resume.city }}</p>{% endif %}
+        {% if resume.skills %}<p>{{ resume.skills|truncatewords:25 }}</p>{% endif %}
+        <a class="button secondary" href="{% url 'public_resume_detail' resume.pk %}">Переглянути резюме</a>
+    </article>
+{% empty %}
+    <div class="card" style="margin-top: 20px;">
+        <p class="empty">
+            {% if request.GET.q %}За вашим запитом публічних резюме не знайдено.{% else %}Публічних резюме поки немає.{% endif %}
+        </p>
+    </div>
+{% endfor %}
+{% endblock %}

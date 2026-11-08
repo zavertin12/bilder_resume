@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Моє резюме · Bilder Resume{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div class="eyebrow">Готовий документ</div>
+    <h1>Попередній перегляд</h1>
+    <p class="lead">Перевірте інформацію перед тим, як поділитися резюме.</p>
+</section>
+
+<article class="card">
+    <header class="resume-header">
+        <h1>{{ resume.name|default:"Ваше ім’я" }}</h1>
+        <div class="contact">
+            {% if resume.email %}<span>{{ resume.email }}</span>{% endif %}
+            {% if resume.phone %}<span>{{ resume.phone }}</span>{% endif %}
+            {% if resume.city %}<span>{{ resume.city }}</span>{% endif %}
+        </div>
+    </header>
+    <section class="resume-section">
+        <h2>Про себе</h2>
+        <p class="{% if not resume.about %}empty{% endif %}">{{ resume.about|default:"Додайте короткий опис про себе." }}</p>
+    </section>
+    <section class="resume-section">
+        <h2>Досвід роботи</h2>
+        <p class="{% if not resume.experience %}empty{% endif %}">{{ resume.experience|default:"Додайте інформацію про досвід роботи." }}</p>
+    </section>
+    <section class="resume-section">
+        <h2>Освіта</h2>
+        <p class="{% if not resume.education %}empty{% endif %}">{{ resume.education|default:"Додайте інформацію про освіту." }}</p>
+    </section>
+    <section class="resume-section">
+        <h2>Навички</h2>
+        <p class="{% if not resume.skills %}empty{% endif %}">{{ resume.skills|default:"Додайте свої професійні навички." }}</p>
+    </section>
+    <div class="actions">
+        <a class="button" href="{% url 'resume_edit' %}">Редагувати резюме</a>
+        <button class="button secondary" type="button" onclick="window.print()">Друкувати / зберегти PDF</button>
+    </div>
+</article>
+{% endblock %}

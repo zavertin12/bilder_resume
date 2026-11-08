@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}{{ resume.name }} · Публічне резюме{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div class="eyebrow">Публічне резюме</div>
+    <h1>{{ resume.name }}</h1>
+    {% if resume.city %}<p class="lead">{{ resume.city }}</p>{% endif %}
+</section>
+
+<article class="card">
+    <header class="resume-header">
+        <h1>{{ resume.name }}</h1>
+        <div class="contact">
+            {% if resume.show_email and resume.email %}<span>{{ resume.email }}</span>{% endif %}
+            {% if resume.show_phone and resume.phone %}<span>{{ resume.phone }}</span>{% endif %}
+            {% if resume.city %}<span>{{ resume.city }}</span>{% endif %}
+        </div>
+    </header>
+    {% if resume.about %}
+    <section class="resume-section">
+        <h2>Про себе</h2>
+        <p>{{ resume.about|linebreaksbr }}</p>
+    </section>
+    {% endif %}
+    {% if resume.experience %}
+    <section class="resume-section">
+        <h2>Досвід роботи</h2>
+        <p>{{ resume.experience|linebreaksbr }}</p>
+    </section>
+    {% endif %}
+    {% if resume.education %}
+    <section class="resume-section">
+        <h2>Освіта</h2>
+        <p>{{ resume.education|linebreaksbr }}</p>
+    </section>
+    {% endif %}
+    {% if resume.skills %}
+    <section class="resume-section">
+        <h2>Навички</h2>
+        <p>{{ resume.skills|linebreaksbr }}</p>
+    </section>
+    {% endif %}
+</article>
+
+<section class="resume-comments card" aria-labelledby="comments-heading">
+    <h2 id="comments-heading">Коментарі ({{ resume.comments.count }})</h2>
+    {% for comment in resume.comments.all %}
+    <article class="resume-comment">
+        <div class="resume-comment-meta">
+            <strong>{{ comment.user.username }}</strong>
+            <time datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"d.m.Y H:i" }}</time>
+        </div>
+        <p>{{ comment.text|linebreaksbr }}</p>
+    </article>
+    {% empty %}
+    <p class="empty">Коментарів ще немає.</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+    <form method="post" class="comment-form">
+        {% csrf_token %}
+        <div class="field">
+            <label for="{{ comment_form.text.id_for_label }}">Залишити коментар</label>
+            {{ comment_form.text }}
+            {% for error in comment_form.text.errors %}
+            <span class="hint" role="alert">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="actions">
+            <button class="button" type="submit">Додати коментар</button>
+        </div>
+    </form>
+    {% else %}
+    <p class="comment-login-prompt">
+        <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Увійдіть</a>, щоб залишити коментар.
+    </p>
+    {% endif %}
+</section>
+{% endblock %}

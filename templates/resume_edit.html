@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Створити резюме · Bilder Resume{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div class="eyebrow">Ваш професійний профіль</div>
+    <h1>Створіть своє резюме</h1>
+    <p class="lead">Заповніть основні дані — ми зберемо їх у чисте та зручне резюме.</p>
+</section>
+
+{% if success %}
+    <div class="notice" role="status">Зміни збережено. Перегляньте своє готове резюме.</div>
+{% endif %}
+
+<form class="card" method="post">
+    {% csrf_token %}
+    <div class="form-grid">
+        <div class="field">
+            <label for="name">Ім’я та прізвище</label>
+            <input id="name" name="name" type="text" maxlength="100" value="{{ resume.name }}" autocomplete="name" required>
+        </div>
+        <div class="field">
+            <label for="email">Електронна пошта</label>
+            <input id="email" name="email" type="email" value="{{ resume.email }}" autocomplete="email" required>
+        </div>
+        <div class="field">
+            <label for="phone">Телефон</label>
+            <input id="phone" name="phone" type="tel" maxlength="30" value="{{ resume.phone }}" autocomplete="tel">
+        </div>
+        <div class="field">
+            <label for="city">Місто</label>
+            <input id="city" name="city" type="text" maxlength="100" value="{{ resume.city }}" autocomplete="address-level2">
+        </div>
+        <div class="field full">
+            <label for="about">Про себе</label>
+            <textarea id="about" name="about" placeholder="Коротко розкажіть про свій досвід, сильні сторони та професійні цілі.">{{ resume.about }}</textarea>
+        </div>
+        <div class="field full">
+            <label for="education">Освіта</label>
+            <textarea id="education" name="education" placeholder="Навчальний заклад, спеціальність, роки навчання…">{{ resume.education }}</textarea>
+        </div>
+        <div class="field full">
+            <label for="experience">Досвід роботи</label>
+            <textarea id="experience" name="experience" placeholder="Посада, компанія, період роботи та ваші досягнення…">{{ resume.experience }}</textarea>
+        </div>
+        <div class="field full">
+            <label for="skills">Навички</label>
+            <textarea id="skills" name="skills" placeholder="Перелічіть професійні навички та інструменти, якими володієте.">{{ resume.skills }}</textarea>
+            <span class="hint">Можна вказати кожну навичку з нового рядка.</span>
+        </div>
+        <div class="field full">
+            <label>
+                <input type="checkbox" name="is_public" {% if resume.is_public %}checked{% endif %}>
+                Опублікувати резюме на сайті
+            </label>
+            <span class="hint">Якщо не позначити, резюме залишиться приватним. Публічне резюме буде доступне всім відвідувачам сайту.</span>
+        </div>
+        <div class="field">
+            <label>
+                <input type="checkbox" name="show_email" {% if resume.show_email %}checked{% endif %}>
+                Показувати електронну пошту в публічному резюме
+            </label>
+        </div>
+        <div class="field">
+            <label>
+                <input type="checkbox" name="show_phone" {% if resume.show_phone %}checked{% endif %}>
+                Показувати телефон у публічному резюме
+            </label>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="button" type="submit">Зберегти резюме</button>
+        <a class="button secondary" href="{% url 'resume' %}">Попередній перегляд</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Реєстрація · Bilder Resume{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div class="eyebrow">Особистий кабінет</div>
+    <h1>Створіть акаунт</h1>
+    <p class="lead">Зареєструйтеся, щоб створити та зберегти своє резюме.</p>
+</section>
+
+<form class="card login-card" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+                <span class="hint">{{ field.help_text }}</span>
+            {% endif %}
+            {% for error in field.errors %}
+                <span class="notice" role="alert">{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    {% if form.non_field_errors %}
+        <div class="notice" role="alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <div class="actions">
+        <button class="button" type="submit">Зареєструватися</button>
+    </div>
+</form>
+{% endblock %}

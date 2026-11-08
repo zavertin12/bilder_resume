@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Вхід · Bilder Resume{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div class="eyebrow">Особистий кабінет</div>
+    <h1>Раді вас бачити</h1>
+    <p class="lead">Увійдіть, щоб створити або переглянути своє резюме.</p>
+</section>
+
+<form class="card login-card" method="post">
+    {% csrf_token %}
+    {% if form.errors %}
+        <div class="notice" role="alert">Неправильне ім’я користувача або пароль. Перевірте дані й спробуйте ще раз.</div>
+    {% endif %}
+    {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+    {% endif %}
+    <div class="field">
+        <label for="id_username">Ім’я користувача</label>
+        <input id="id_username" name="username" type="text" autocomplete="username" required autofocus>
+    </div>
+    <div class="field">
+        <label for="id_password">Пароль</label>
+        <input id="id_password" name="password" type="password" autocomplete="current-password" required>
+    </div>
+    <div class="actions">
+        <button class="button" type="submit">Увійти</button>
+    </div>
+</form>
+{% endblock %}

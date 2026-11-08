@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Створити вакансію · Bilder Resume{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div class="eyebrow">Пропозиції роботи</div>
+    <h1>Створити вакансію</h1>
+    <p class="lead">Заповніть інформацію про посаду та вимоги до кандидата.</p>
+</section>
+
+<form class="card" method="post">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="notice" role="alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <div class="form-grid">
+        {% for field in form %}
+            <div class="field {% if field.name == 'description' or field.name == 'requirements' %}full{% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                    <span class="notice" role="alert">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="actions">
+        <button class="button" type="submit">Опублікувати вакансію</button>
+        <a class="button secondary" href="{% url 'vacancy_list' %}">Скасувати</a>
+    </div>
+</form>
+{% endblock %}
